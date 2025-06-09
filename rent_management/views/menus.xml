@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Menu Root untuk Rental Management -->
+        <menuitem id="menu_rental_management_root" name="Rental Management" sequence="10"/>
+
+        <!-- Submenu untuk Master Data -->
+        <menuitem id="menu_rental_master_data"
+                  name="Vehicles"
+                  parent="menu_rental_management_root"
+                  sequence="30"/>
+
+        <!-- Menu Vehicle di bawah Master Data -->
+        <menuitem id="menu_vehicle_vehicle"
+                  name="Vehicles"
+                  parent="menu_rental_master_data"
+                  sequence="10"
+                  action="vehicle_act_window"/>
+
+        <menuitem id="menu_vehicle_brand"
+                  name="Vehicle Brand"
+                  parent="menu_rental_master_data"
+                  sequence="20"
+                  action="vehicle_brand_action"/>
+
+        <menuitem id="menu_booking_transaction"
+                  name="Booking"
+                  parent="menu_rental_management_root"
+                  action="action_booking_transaction"
+                  sequence="10"/>
+
+        <menuitem id="menu_booking_payment"
+                  name="Payments"
+                  parent="menu_rental_management_root"
+                  action="action_booking_payments"
+                  sequence="20"/>
+
+    </data>
+</odoo>

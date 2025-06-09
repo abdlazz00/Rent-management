@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="document_type_ktp" model="document.type">
+            <field name="name">KTP</field>
+        </record>
+        <record id="document_type_stnk" model="document.type">
+            <field name="name">STNK</field>
+        </record>
+        <record id="document_type_sim" model="document.type">
+            <field name="name">SIM</field>
+        </record>
+    </data>
+</odoo>

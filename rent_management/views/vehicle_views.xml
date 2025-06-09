@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="vehicle_form_view" model="ir.ui.view">
+            <field name="name">vehicle.form</field>
+            <field name="model">vehicle.vehicle</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="available,rent"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Name Vehicle"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="license_plate"/>
+                                <field name="year"/>
+                                <field name="brand_id"/>
+                                <field name="vehicle_type"/>
+                                <field name="currency_id"/>
+                                <field name="price_per_day" widget="monetary"/>
+                            </group>
+                            <group>
+                                <field name="image" nolabel="1" widget="image" options="{'preview_image': 'image'}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="Vehicle_tree_view" model="ir.ui.view">
+            <field name="name">vehicle.vehicle.tree</field>
+            <field name="model">vehicle.vehicle</field>
+            <field name="arch" type="xml">
+                <list string="Vehicle">
+                    <field name="full_name" optional="show"/>
+                    <field name="name" optional="hide"/>
+                    <field name="license_plate" optional="hide"/>
+                    <field name="brand_id"/>
+                    <field name="vehicle_type"/>
+                    <field name="currency_id"/>
+                    <field name="price_per_day" widget="monetary" sum="Total Price"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_vehicle_vehicle_kanban" model="ir.ui.view">
+            <field name="name">vehicle.vehicle.kanban</field>
+            <field name="model">vehicle.vehicle</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_view o_vehicle_kanban">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="o_kanban_record card shadow-sm p-2" style="width: 240px;">
+                                <div class="text-center mb-2">
+                                    <img t-att-src="kanban_image('vehicle.vehicle', 'image', record.id.value)"
+                                         class="img img-fluid rounded"
+                                         alt="Vehicle Image"
+                                         style="max-height: 100px;" />
+                                </div>
+                                <div class="text-center">
+                                    <div class="fw-bold text-primary">
+                                        <t t-esc="record.name.value"/>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <t t-esc="record.license_plate.value"/>
+                                    </div>
+                                    <div class="mt-1 text-muted small">
+                                        <i class="fa fa-car me-1"/> <t t-esc="record.brand_id.value"/>
+                                    </div>
+                                    <div class="fw-semibold fs-6 my-2">
+                                        <field name="price_per_day" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    </div>
+                                    <div>
+                                        <span t-if="record.state.raw_value == 'available'" class="badge badge-success">Available</span>
+                                        <span t-if="record.state.raw_value == 'book'" class="badge badge-warning">Booked</span>
+                                        <span t-if="record.state.raw_value == 'rent'" class="badge badge-danger">Rented</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                    <field name="name"/>
+                    <field name="license_plate"/>
+                    <field name="brand_id"/>
+                    <field name="price_per_day"/>
+                    <field name="currency_id"/>
+                    <field name="image"/>
+                    <field name="state"/>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="vehicle_search_view" model="ir.ui.view">
+            <field name="name">vehicle.vehicle.search</field>
+            <field name="model">vehicle.vehicle</field>
+            <field name="arch" type="xml">
+                <search string="Vehicle Search">
+                    <!-- Field pencarian -->
+                    <field name="name"/>
+                    <field name="license_plate"/>
+                    <field name="full_name"/>
+
+                    <!-- Filter examples -->
+                    <filter string="Available" name="filter_available" domain="[('state', '=', 'available')]"/>
+                    <filter string="Booked" name="filter_booked" domain="[('state', '=', 'book')]"/>
+                    <filter string="Rented" name="filter_rented" domain="[('state', '=', 'rent')]"/>
+
+                    <separator/>
+
+                    <!-- Group By -->
+                    <group expand="1" string="Group By">
+                        <filter string="By Brand" name="group_brand" context="{'group_by':'brand_id'}"/>
+                        <filter string="By Vehicle Type" name="group_vehicle_type" context="{'group_by':'vehicle_type'}"/>
+                        <filter string="By State" name="group_state" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="vehicle_act_window" model="ir.actions.act_window">
+            <field name="name">Vehicle</field>
+            <field name="res_model">vehicle.vehicle</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There are no vehicles yet. Click here to create your first vehicle.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

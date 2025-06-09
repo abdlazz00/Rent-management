@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View untuk Booking Transaction -->
+        <record id="view_booking_transaction_form" model="ir.ui.view">
+            <field name="name">booking.transaction.form</field>
+            <field name="model">booking.transaction</field>
+            <field name="arch" type="xml">
+                <form string="Booking Transaction">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,rented,done"/>
+                        <button name="button_reset" type="object" string="Set to Draft" class="btn btn-secondary"/>
+                        <button name="button_confirm" type="object" string="Confirm Booking" invisible="state != 'draft'" class="btn btn-primary"/>
+                        <button name="button_done" type="object" string="Done" invisible="state != 'rented'" class="btn btn-success"/>
+                        <button name="button_cancel" type="object" string="Cancel" invisible="state != 'rented'" class="btn btn-danger"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_payments"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-credit-card"
+                                    invisible="state != 'rented'">
+                                <field name="payment_count" widget="statinfo" string="Payments"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Booking Reference"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id"/>
+                                <field name="payment_count" invisible="1"/>
+                            </group>
+                            <group>
+                                <label for="from_date" string="Rent Date"/>
+                                <div>
+                                    <field name="from_date" placeholder="From" class="oe_inline"/>
+                                    -
+                                    <field name="to_date" placeholder="To" class="oe_inline" nolabel="1"/>
+                                </div>
+                                <field name="rent_guarantee"/>
+                                <field name="documents_type" widget="many2many_tags" invisible="not rent_guarantee"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Booking Lines">
+                                <field name="line_ids" context="{'default_booking_transaction_id': active}">
+                                    <list editable="bottom">
+                                        <field name="vehicle_id"/>
+                                        <field name="license_plate" readonly="1"/>
+                                        <field name="brand" readonly="1"/>
+                                        <field name="rent_from" readonly="1"/>
+                                        <field name="rent_to" readonly="1"/>
+                                        <field name="currency_id" readonly="1"/>
+                                        <field name="price" widget="monetary" readonly="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                        <div class="o_booking_footer">
+                            <h2>
+                                <field name="currency_id" widget="many2one" options="{'no_create': True}" />
+                                <field name="total_amount" string="Total Price" widget="monetary" readonly="1" />
+                            </h2>
+                        </div>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_booking_transaction_tree" model="ir.ui.view">
+            <field name="name">booking.transaction.tree</field>
+            <field name="model">booking.transaction</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="state"/>
+                    <field name="total_amount"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_booking_transaction" model="ir.actions.act_window">
+            <field name="name">Booking Transactions</field>
+            <field name="res_model">booking.transaction</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Buat transaksi booking kendaraan baru.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

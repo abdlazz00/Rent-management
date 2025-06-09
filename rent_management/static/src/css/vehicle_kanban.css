@@ -1,0 +1,68 @@
+.o_vehicle_kanban .badge {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  color: white;
+  user-select: none;
+}
+
+.o_vehicle_kanban .badge-success {
+  background-color: #28a745; /* Hijau */
+}
+
+.o_vehicle_kanban .badge-warning {
+  background-color: #ffc107; /* Kuning */
+  color: black; /* teks gelap agar kontras */
+}
+
+.o_vehicle_kanban .badge-danger {
+  background-color: #dc3545; /* Merah */
+}
+
+.o_booking_footer {
+    border-top: 1px solid #d5d5d5;
+    padding: 10px 15px;
+    background-color: #f8f8f8;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+}
+
+.o_booking_footer h2 {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.o_booking_footer h2 .o_field_widget,
+.o_booking_footer h2 .o_field_widget input,
+.o_booking_footer h2 .o_field_widget span {
+    font-weight: bold !important;
+    min-width: 150px;
+}
+
+/* Contoh mengubah background dan teks tag */
+.o_field_many2manytags .o_tag {
+    background-color: #4a90e2;  /* Warna biru */
+    color: white;               /* Warna teks putih */
+    border-radius: 12px;        /* Membuat tag bulat */
+    padding: 3px 10px;
+    font-weight: bold;
+}
+
+/* Hover effect untuk tag */
+.o_field_many2manytags .o_tag:hover {
+    background-color: #357ABD; /* Warna biru lebih gelap saat hover */
+    cursor: pointer;
+}

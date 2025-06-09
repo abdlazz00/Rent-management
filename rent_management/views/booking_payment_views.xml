@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- Tree View untuk Booking Payment -->
+        <record id="view_booking_payment_tree" model="ir.ui.view">
+            <field name="name">booking.payment.tree</field>
+            <field name="model">booking.payment</field>
+            <field name="arch" type="xml">
+                <list string="Booking Payments">
+                    <field name="name"/>
+                    <field name="booking_transaction_id"/>
+                    <field name="payment_date"/>
+                    <field name="amount"/>
+                    <field name="payment_method"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View untuk Booking Payment -->
+        <record id="view_booking_payment_form" model="ir.ui.view">
+            <field name="name">booking.payment.form</field>
+            <field name="model">booking.payment</field>
+            <field name="arch" type="xml">
+                <form string="Booking Payment">
+                    <header>
+                        <button name="action_confirm" type="object" string="Confirm Payment" invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_cancel" type="object" string="Cancel Payment" invisible="state == 'cancel'" class="btn-secondary"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" statusbar_colors='{"draft": "blue", "confirmed": "green", "cancelled": "red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Payment Number" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id"/>
+                                <field name="booking_transaction_id" options="{'no_create': True}"/>
+                                <field name="currency_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="payment_date"/>
+                                <field name="payment_method"/>
+                                <field name="amount" string="Price" widget="monetary"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Payment Lines">
+                                <field name="payment_line_ids" context="{'default_payment_id': active}">
+                                    <list editable="bottom">
+                                        <field name="vehicle_id"/>
+                                        <field name="license_plate" readonly="1"/>
+                                        <field name="brand_id" readonly="1"/>
+                                        <field name="days"/>
+                                        <field name="currency_id"/>
+                                        <field name="price" widget="monetary" readonly="1"/>
+                                        <field name="total_amount" widget="monetary"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action untuk membuka list booking payments -->
+        <record id="action_booking_payments" model="ir.actions.act_window">
+            <field name="name">Booking Payments</field>
+            <field name="res_model">booking.payment</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>
+                    Manage Booking Payments here.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

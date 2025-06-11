@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Calendar View -->
+        <record id="view_vehicle_booking_line_calendar" model="ir.ui.view">
+            <field name="name">vehicle.booking.line.calendar</field>
+            <field name="model">booking.transaction.line</field>
+            <field name="arch" type="xml">
+                <calendar string="Vehicle Rental Calendar"
+                          date_start="rent_from"
+                          date_stop="rent_to"
+                          color="vehicle_id"
+                          mode="month">
+                     <field name="booking_transaction_id"/>
+                     <field name="vehicle_id"/>
+                     <field name="license_plate"/>
+                     <field name="brand"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_vehicle_booking_line_calendar" model="ir.actions.act_window">
+            <field name="name">Vehicle Rental Calendar</field>
+            <field name="res_model">booking.transaction.line</field>
+            <field name="view_mode">calendar,list,form</field>
+            <field name="domain">[('booking_transaction_id.state', 'in', ['rented'])]</field>
+            <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_vehicle_rental_calendar"
+                  name="Vehicle Calendar"
+                  parent="rent_management.menu_rental_management_root"
+                  action="action_vehicle_booking_line_calendar"
+                  sequence="15"/>
+    </data>
+</odoo>

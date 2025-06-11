@@ -1,4 +1,6 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
 
 class BookingTransaction(models.Model):
     _name = 'booking.transaction'
@@ -9,8 +11,8 @@ class BookingTransaction(models.Model):
     active = fields.Boolean('Active', default=True)
     company_id = fields.Many2one('res.company', 'Company', compute='_compute_get_company_id')
     customer_id = fields.Many2one('res.partner', string='Customer')
-    from_date = fields.Date('From')
-    to_date = fields.Date('To')
+    from_date = fields.Datetime('From')
+    to_date = fields.Datetime('To')
     rent_guarantee = fields.Boolean('Rent Guarantee')
     documents_type = fields.Many2many(comodel_name="document.type", string="Documents")
     state = fields.Selection([
@@ -28,6 +30,21 @@ class BookingTransaction(models.Model):
     payment_count = fields.Integer(
         string="Payment Count", compute="_compute_payment_count"
     )
+    payment_ids = fields.One2many(
+        "booking.payment", "booking_transaction_id", string="Payments"
+    )
+    paid_amount = fields.Float("Paid Amount", compute='_compute_paid_amount', store=True)
+    remaining_amount = fields.Float("Remaining Amount", compute='_compute_remaining_amount', store=True)
+
+    @api.depends('payment_ids.amount')
+    def _compute_paid_amount(self):
+        for rec in self:
+            rec.paid_amount = sum(payment.amount for payment in rec.payment_ids)
+
+    @api.depends('total_amount', 'paid_amount')
+    def _compute_remaining_amount(self):
+        for rec in self:
+            rec.remaining_amount = rec.total_amount - rec.paid_amount
 
     @api.model
     def create(self, vals):
@@ -85,6 +102,10 @@ class BookingTransaction(models.Model):
 
     def button_done(self):
         for record in self:
+            if record.remaining_amount > 0:
+                raise ValidationError("Pembayaran harus lunas sebelum transaksi dapat diselesaikan (Done).\n"
+                                      "Sisa pembayaran: %s %s" % (record.remaining_amount, record.currency_id.symbol))
+
             record.state = 'done'
             for line in record.line_ids:
                 if line.vehicle_id:
@@ -148,14 +169,23 @@ class BookingTransactionLine(models.Model):
     _name = 'booking.transaction.line'
     _description = 'Booking Transaction Line'
 
+    name = fields.Char("name", compute="_compute_name", store=True)
     booking_transaction_id = fields.Many2one("booking.transaction", string="Booking Transaction")
     vehicle_id = fields.Many2one('vehicle.vehicle', string='Vehicle')
     license_plate = fields.Char(related='vehicle_id.license_plate' ,string='Licence Plate')
     brand = fields.Many2one('vehicle.brand',related='vehicle_id.brand_id' , string='Brand')
-    rent_from = fields.Date(string='Rent From', related='booking_transaction_id.from_date', store=True)
-    rent_to = fields.Date(string='Rent To', related='booking_transaction_id.to_date', store=True)
+    rent_from = fields.Datetime(string='Rent From', related='booking_transaction_id.from_date', store=True)
+    rent_to = fields.Datetime(string='Rent To', related='booking_transaction_id.to_date', store=True)
     currency_id = fields.Many2one('res.currency', related='vehicle_id.currency_id',string='Currency', readonly=True)
     price = fields.Float(related='vehicle_id.price_per_day' , string='Price')
+
+    @api.depends('vehicle_id.full_name')
+    def _compute_name(self):
+        for rec in self:
+            if rec.vehicle_id and rec.vehicle_id.full_name:
+                rec.name = rec.vehicle_id.full_name
+            else:
+                rec.name = "New Booking Line"
 
 class DocumentType(models.Model):
     _name = 'document.type'

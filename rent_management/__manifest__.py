@@ -6,7 +6,7 @@
     "version": "1.0",
     "website": " ",
     "summary": "Rental Management",
-    "depends": ["base", "mail", "web"],
+    "depends": ["base", "mail", "web", "base_setup"],
     "data": [
         "data/document_type_data.xml",
         "data/sequence.xml",
@@ -18,6 +18,7 @@
         "views/booking_payment_views.xml",
         "views/menus.xml",
         "views/vehicle_booking_calendar_views.xml",
+        "views/res_config_settings_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

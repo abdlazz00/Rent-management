@@ -24,9 +24,11 @@
             <field name="arch" type="xml">
                 <form string="Booking Payment">
                     <header>
-                        <button name="action_confirm" type="object" string="Confirm Payment" invisible="state != 'draft'" class="btn-primary"/>
-                        <button name="action_cancel" type="object" string="Cancel Payment" invisible="state == 'cancel'" class="btn-secondary"/>
+                        <button name="button_confirm" type="object" string="Confirm Payment" invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="button_cancel" type="object" string="Cancel Payment" invisible="state == 'cancel'" class="btn-secondary"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" statusbar_colors='{"draft": "blue", "confirmed": "green", "cancelled": "red"}'/>
+                         <button name="action_send_whatsapp_invoice" type="object" string="Send via WhatsApp" class="oe_highlight"
+                                invisible="state == 'draft'"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

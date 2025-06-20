@@ -12,6 +12,9 @@ class BookingPayment(models.Model):
     _inherit = ["mail.thread", "mail.render.mixin"]
 
     name = fields.Char("Payment Number", default="New Payment Number", readonly=True)
+    sanitized_name = fields.Char(
+        string="Sanitized Name", compute="_compute_sanitized_name", store=False
+    )
     active = fields.Boolean("Active", default=True)
     customer_id = fields.Many2one("res.partner", string="Customer", required=True)
     booking_transaction_id = fields.Many2one(
@@ -19,18 +22,15 @@ class BookingPayment(models.Model):
     )
     amount = fields.Float("Amount", required=True)
     payment_date = fields.Date("Payment Date", default=fields.Date.today())
-    payment_method = fields.Selection(
-        [  # TAMBAHKAN FIELD INI
-            ("cash", "Cash"),
-            ("bank_transfer", "Bank Transfer"),
-            ("credit_card", "Credit Card"),
-            ("debit_card", "Debit Card"),
-            ("other", "Other"),
-        ],
-        string="Payment Method",
-        default="cash",
-        required=True,
+    payment_date_str = fields.Char(
+        string="Formatted Payment Date", compute="_compute_payment_date_str", store=False
     )
+    payment_method = fields.Selection(
+        [
+            ("cash", "Cash"), ("bank_transfer", "Bank Transfer"),
+            ("credit_card", "Credit Card"), ("debit_card", "Debit Card"),
+            ("other", "Other"),],string="Payment Method", default="cash", required=True)
+    payment_method_display = fields.Char(string="Payment Method Display", compute="_compute_payment_method_display")
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -54,6 +54,23 @@ class BookingPayment(models.Model):
         string="Payment Lines",
         ondelete="cascade",
     )
+
+    @api.depends("payment_method")
+    def _compute_payment_method_display(self):
+        for rec in self:
+            rec.payment_method_display = rec.payment_method = dict(
+                rec._fields["payment_method"].selection
+            ).get(rec.payment_method, " ")
+
+    @api.depends("name")
+    def _compute_sanitized_name(self):
+        for rec in self:
+            rec.sanitized_name = (rec.name or "").replace("/", "_")
+
+    @api.depends("payment_date")
+    def _compute_payment_date_str(self):
+        for rec in self:
+            rec.payment_date_str = rec.payment_date.strftime("%d-%m-%Y") if rec.payment_date else ""
 
     @api.model
     def create(self, vals):
@@ -81,99 +98,37 @@ class BookingPayment(models.Model):
         for rec in self:
             rec.state = "draft"
 
-    def action_send_whatsapp_invoice(self):
+    def action_send_email_receipt(self):
         self.ensure_one()
+        template = self.env.ref("rent_management.email_template_booking_receipt_ui")
+        if not template:
+            raise ValidationError("Email template 'Booking Payment Receipt' not found.")
 
-        ICPSudo = self.env["ir.config_parameter"].sudo()
-        account_sid = ICPSudo.get_param("rent_management.twilio_account_sid")
-        auth_token = ICPSudo.get_param("rent_management.twilio_auth_token")
-        twilio_whatsapp_number = ICPSudo.get_param(
-            "rent_management.twilio_whatsapp_number"
-        )
-        template_name = ICPSudo.get_param(
-            "rent_management.whatsapp_invoice_template_name"
-        )
-
-        if not (
-            account_sid and auth_token and twilio_whatsapp_number and template_name
-        ):
-            raise ValidationError(
-                "Konfigurasi Twilio belum lengkap. Mohon lengkapi di Pengaturan > Rental Management."
-            )
-
-        customer_whatsapp_number = (
-            self.customer_id.mobile
-        )  # Asumsi menggunakan field 'mobile'
-        if not customer_whatsapp_number:
-            raise ValidationError(
-                "Nomor WhatsApp pelanggan tidak ditemukan. Mohon lengkapi data pelanggan."
-            )
-
-        # Bersihkan nomor dan format ke E.164
-        # Contoh: +628123456789
-        customer_whatsapp_number = customer_whatsapp_number.replace(" ", "").replace(
-            "-", ""
-        )
-        if not customer_whatsapp_number.startswith("+"):
-            if customer_whatsapp_number.startswith("0"):
-                customer_whatsapp_number = "+62" + customer_whatsapp_number[1:]
-            else:
-                customer_whatsapp_number = (
-                    "+" + customer_whatsapp_number
-                )  # Asumsi ada kode negara jika tidak diawali 0
-
-        # Ambil display name untuk payment_method
-        payment_method_display = dict(self._fields["payment_method"].selection).get(
-            self.payment_method
-        )
-
-        template_data = {
-            "1": self.customer_id.name or "",  # Nama Customer
-            "2": self.name or "",  # Nomor Payment
-            "3": (
-                f"{self.amount:,.0f} {self.currency_id.symbol}"
-                if self.currency_id
-                else f"{self.amount:,.0f}"
-            ),
-            "4": (
-                self.payment_date.strftime("%d-%m-%Y") if self.payment_date else ""
-            ),
-            "5": self.payment_method or "",
-        }
+        if not self.customer_id.email:
+            raise ValidationError("Email pelanggan tidak ditemukan. Mohon lengkapi data pelanggan.")
 
         try:
-            client = Client(account_sid, auth_token)
-            message = client.messages.create(
-                from_=f"whatsapp:{twilio_whatsapp_number}",
-                to=f"whatsapp:{customer_whatsapp_number}",
-                content_sid=template_name,  # Terkadang Twilio menggunakan Content SID atau Template SID
-                # Jika template_name tidak berfungsi, coba cari Content SID
-                content_variables=template_data,
-            )
-            _logger.info(f"WhatsApp message sent successfully: {message.sid}")
-            self.message_post(
-                body=f"WhatsApp tagihan berhasil dikirim. SID: {message.sid}"
-            )
+            template.send_mail(self.id, force_send=True)
+            self.message_post(body=f"Email tanda terima berhasil dikirim ke {self.customer_id.email}.")
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
                     "title": "Sukses",
-                    "message": "Pesan WhatsApp tagihan berhasil dikirim!",
+                    "message": "Email tanda terima berhasil dikirim!",
                     "type": "success",
                     "sticky": False,
                 },
             }
         except Exception as e:
-            _logger.error(f"Failed to send WhatsApp message: {e}")
+            _logger.error(f"Failed to send receipt email: {e}")
             self.message_post(
-                body=f"Gagal mengirim WhatsApp tagihan: {e}",
+                body=f"Gagal mengirim email tanda terima: {e}",
                 message_type="comment",
                 subtype_xmlid="mail.mt_note",
             )
-            raise ValidationError(
-                f"Gagal mengirim pesan WhatsApp. Pastikan konfigurasi Twilio dan nomor WhatsApp benar. Error: {e}"
-            )
+            raise ValidationError(f"Gagal mengirim email tanda terima. Error: {e}")
+
 
 
 class BookingPaymentLine(models.Model):

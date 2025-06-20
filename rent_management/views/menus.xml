@@ -35,5 +35,11 @@
                   action="action_booking_payments"
                   sequence="20"/>
 
+        <menuitem id="menu_rental_expenses"
+                  name="Expenses"
+                  parent="menu_rental_management_root"
+                  action="action_rental_expense"
+                  sequence="40"/>
+
     </data>
 </odoo>

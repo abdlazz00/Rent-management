@@ -51,3 +51,7 @@ class Vehicle(models.Model):
         current_company_id = self.env.company.id
         for record in self:
             record.company_id = current_company_id
+
+    def button_available(self):
+        for record in self:
+            record.state = "available"

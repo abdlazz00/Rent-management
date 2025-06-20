@@ -18,6 +18,7 @@
         "views/booking_payment_views.xml",
         "views/menus.xml",
         "views/vehicle_booking_calendar_views.xml",
+        "views/expense_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

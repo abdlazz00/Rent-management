@@ -27,8 +27,6 @@
                         <button name="button_confirm" type="object" string="Confirm Payment" invisible="state != 'draft'" class="btn-primary"/>
                         <button name="button_cancel" type="object" string="Cancel Payment" invisible="state == 'cancel'" class="btn-secondary"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled" statusbar_colors='{"draft": "blue", "confirmed": "green", "cancelled": "red"}'/>
-                        <button name="action_send_email_receipt" type="object" string="Send Receipt via Email" class="oe_highlight"
-                                invisible="state != 'confirmed' and state != 'paid'"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

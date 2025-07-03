@@ -6,7 +6,11 @@
     "version": "1.0",
     "website": " ",
     "summary": "Rental Management",
-    "depends": ["base", "mail", "web"],
+    "depends": [
+        "base",
+        "mail",
+        "web",
+    ],
     "data": [
         "data/document_type_data.xml",
         "data/sequence.xml",

@@ -1,7 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import logging
-from twilio.rest import Client
+
 
 _logger = logging.getLogger(__name__)
 
@@ -97,37 +97,6 @@ class BookingPayment(models.Model):
     def button_reset(self):
         for rec in self:
             rec.state = "draft"
-
-    def action_send_email_receipt(self):
-        self.ensure_one()
-        template = self.env.ref("rent_management.email_template_booking_receipt_ui")
-        if not template:
-            raise ValidationError("Email template 'Booking Payment Receipt' not found.")
-
-        if not self.customer_id.email:
-            raise ValidationError("Email pelanggan tidak ditemukan. Mohon lengkapi data pelanggan.")
-
-        try:
-            template.send_mail(self.id, force_send=True)
-            self.message_post(body=f"Email tanda terima berhasil dikirim ke {self.customer_id.email}.")
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Sukses",
-                    "message": "Email tanda terima berhasil dikirim!",
-                    "type": "success",
-                    "sticky": False,
-                },
-            }
-        except Exception as e:
-            _logger.error(f"Failed to send receipt email: {e}")
-            self.message_post(
-                body=f"Gagal mengirim email tanda terima: {e}",
-                message_type="comment",
-                subtype_xmlid="mail.mt_note",
-            )
-            raise ValidationError(f"Gagal mengirim email tanda terima. Error: {e}")
 
 
 

@@ -6,16 +6,13 @@
     "version": "1.0",
     "website": " ",
     "summary": "Rental Management",
-    "depends": [
-        "base",
-        "mail",
-        "web",
-    ],
+    "depends": ["base", "mail", "web"],
     "data": [
         "data/document_type_data.xml",
         "data/sequence.xml",
         "security/security.xml",
         "security/ir.model.access.csv",
+        "views/rent_dashboard_views.xml",
         "views/vehicle_views.xml",
         "views/vehicle_brand_views.xml",
         "views/booking_transaction_views.xml",
@@ -27,6 +24,10 @@
     "assets": {
         "web.assets_backend": [
             "rent_management/static/src/css/vehicle_kanban.css",
+            "rent_management/static/src/css/rent_dashboard.css",
+            "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js",
+            "rent_management/static/src/js/rent_dashboard.js",
+            "rent_management/static/src/xml/rent_dashboard.xml",
         ],
     },
     "installable": True,

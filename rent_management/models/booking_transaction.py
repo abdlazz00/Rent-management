@@ -9,7 +9,7 @@ class BookingTransaction(models.Model):
 
     name = fields.Char('Booking Number', default='New Booking Number')
     active = fields.Boolean('Active', default=True)
-    company_id = fields.Many2one('res.company', 'Company', compute='_compute_get_company_id')
+    company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company, required=True)
     customer_id = fields.Many2one('res.partner', string='Customer')
     from_date = fields.Datetime('From')
     to_date = fields.Datetime('To')
@@ -62,11 +62,11 @@ class BookingTransaction(models.Model):
                         line.vehicle_id.state = 'book'
         return result
 
-    @api.depends('company_id')
-    def _compute_get_company_id(self):
-        current_company_id = self.env.company.id
-        for record in self:
-            record.company_id = current_company_id
+    # @api.depends('company_id')
+    # def _compute_get_company_id(self):
+    #     current_company_id = self.env.company.id
+    #     for record in self:
+    #         record.company_id = current_company_id
 
     @api.depends('from_date', 'to_date', 'line_ids.price')
     def _compute_total_amount(self):

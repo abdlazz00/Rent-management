@@ -25,6 +25,12 @@ class RentExpense(models.Model):
                                 "res.currency", string="Currency",
                                  default=lambda self: self.env.company.currency_id.id, required=True,
                                  )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
     state = fields.Selection([
         ('draft','Draft'),
         ('confirmed','Confirmed'),

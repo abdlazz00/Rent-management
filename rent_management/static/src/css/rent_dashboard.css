@@ -1,0 +1,49 @@
+.o_rent_card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    height: 100%;
+}
+.o_rent_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1) !important;
+    cursor: pointer;
+}
+
+.o_card_icon {
+    font-size: 28px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.o_card_info .o_card_value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.o_card_info .o_card_title {
+    font-size: 0.95rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.o_rent_card_available .o_card_icon { background-color: rgba(40, 167, 69, 0.2); color: #28a745; }
+.o_rent_card_available .o_card_value { color: #28a745; }
+
+.o_rent_card_rented .o_card_icon { background-color: rgba(220, 53, 69, 0.2); color: #dc3545; }
+.o_rent_card_rented .o_card_value { color: #dc3545; }
+
+.o_rent_card_revenue .o_card_icon { background-color: rgba(13, 110, 253, 0.2); color: #0d6efd; }
+.o_rent_card_revenue .o_card_value { color: #0d6efd; }
+
+.o_rent_card_new .o_card_icon { background-color: rgba(111, 66, 193, 0.2); color: #6f42c1; }
+.o_rent_card_new .o_card_value { color: #6f42c1; }

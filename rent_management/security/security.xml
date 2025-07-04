@@ -1,54 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
-        <!-- Kategori modul Rental Management -->
         <record model="ir.module.category" id="rental_management_category">
             <field name="name">Rental Management</field>
+            <field name="description">User access levels for Rental Management module</field>
             <field name="sequence">1</field>
         </record>
 
-        <!-- Grup Employee -->
-        <record id="group_rental_employee" model="res.groups">
-            <field name="name">Vehicle Employee</field>
+        <record id="group_rent_staff" model="res.groups">
+            <field name="name">Rental / Staff</field>
+            <field name="category_id" ref="rental_management_category"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-            <field name="category_id" ref="rental_management_category"/>
+            <field name="comment">The user will have day-to-day operational access, like creating bookings and payments.</field>
         </record>
 
-        <!-- Grup Manager -->
-        <record id="group_rental_manager" model="res.groups">
-            <field name="name">Vehicle Manager</field>
+        <record id="group_rent_owner" model="res.groups">
+            <field name="name">Rental / Owner</field>
             <field name="category_id" ref="rental_management_category"/>
-            <field name="implied_ids" eval="[(4, ref('group_rental_employee'))]"/>
-            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('group_rent_staff'))]"/>
+            <field name="comment">The user will have full access to all rental features, including dashboards and reports.</field>
         </record>
 
-                <!-- Grup Booking Transaction Employee -->
-        <record id="group_booking_transaction_employee" model="res.groups">
-            <field name="name">Booking Transaction Employee</field>
-            <field name="implied_ids" eval="[(4, ref('group_rental_employee'))]"/>
+        <record id="group_rent_administrator" model="res.groups">
+            <field name="name">Rental / Administrator</field>
             <field name="category_id" ref="rental_management_category"/>
-        </record>
-
-        <!-- Grup Booking Transaction Manager -->
-        <record id="group_booking_transaction_manager" model="res.groups">
-            <field name="name">Booking Transaction Manager</field>
-            <field name="implied_ids" eval="[(4, ref('group_booking_transaction_employee')), (4, ref('group_rental_manager'))]"/>
-            <field name="category_id" ref="rental_management_category"/>
-        </record>
-
-                <!-- Grup Booking Payment Employee -->
-        <record id="group_booking_payment_employee" model="res.groups">
-            <field name="name">Booking Payment Employee</field>
-            <field name="implied_ids" eval="[(4, ref('group_rental_employee'))]"/>
-            <field name="category_id" ref="rental_management_category"/>
-        </record>
-
-        <!-- Grup Booking Payment Manager -->
-        <record id="group_booking_payment_manager" model="res.groups">
-            <field name="name">Booking Payment Manager</field>
-            <field name="implied_ids" eval="[(4, ref('group_booking_payment_employee')), (4, ref('group_rental_manager'))]"/>
-            <field name="category_id" ref="rental_management_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_rent_owner'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+            <field name="comment">The user is a system administrator with full control over the module.</field>
         </record>
     </data>
 </odoo>

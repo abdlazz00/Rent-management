@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="rent_management.RentDashboard" owl="1">
+        <div class="o_rent_dashboard container-fluid p-4" style="background-color: #f8f9fa; overflow: auto; max-height: 100%;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h2">Rental Dashboard</h2>
+                    <h5 class="text-muted">Selamat datang, <t t-out="state.user_name"/>!</h5>
+                </div>
+                <div style="width: 200px;">
+                    <select class="form-select" t-model="state.period">
+                        <option value="year">Tahun Ini</option>
+                        <option value="quarter">Kuartal Ini</option>
+                        <option value="month" selected="1">Bulan Ini</option>
+                        <option value="week">Minggu Ini</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm o_rent_card o_rent_card_available">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="o_card_icon me-3">
+                                <i class="fa fa-fw fa-check-circle"/>
+                            </div>
+                            <div class="o_card_info">
+                                <h4 class="o_card_value"><t t-out="state.kpis.available_vehicles"/></h4>
+                                <div class="o_card_title">Kendaraan Tersedia</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm o_rent_card o_rent_card_rented">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="o_card_icon me-3">
+                                <i class="fa fa-fw fa-car"/>
+                            </div>
+                            <div class="o_card_info">
+                                <h4 class="o_card_value"><t t-out="state.kpis.rented_vehicles"/></h4>
+                                <div class="o_card_title">Kendaraan Disewa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                     <div class="card shadow-sm o_rent_card o_rent_card_revenue">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="o_card_icon me-3">
+                                <i class="fa fa-fw fa-credit-card"/>
+                            </div>
+                            <div class="o_card_info">
+                                <h4 class="o_card_value"><t t-out="state.kpis.total_revenue"/></h4>
+                                <div class="o_card_title">Total Pendapatan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                     <div class="card shadow-sm o_rent_card o_rent_card_new">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="o_card_icon me-3">
+                                <i class="fa fa-fw fa-book"/>
+                            </div>
+                            <div class="o_card_info">
+                                <h4 class="o_card_value"><t t-out="state.kpis.new_bookings"/></h4>
+                                <div class="o_card_title">Booking Baru</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Pendapatan vs Pengeluaran</h5>
+                            <canvas t-ref="revenueVsExpenseChartRef"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                     <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Distribusi Status Kendaraan</h5>
+                            <canvas t-ref="vehicleStatusChartRef"/>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-lg-12 mt-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Top 10 Kendaraan Terpopuler</h5>
+                            <canvas t-ref="popularVehiclesChartRef"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

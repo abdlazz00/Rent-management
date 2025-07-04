@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_rent_management_dashboard" model="ir.actions.client">
+        <field name="name">Rental Dashboard</field>
+        <field name="tag">rent_dashboard</field>
+    </record>
+
+    <menuitem id="menu_rental_dashboard"
+              name="Dashboard"
+              parent="menu_rental_management_root"
+              sequence="0"
+              action="action_rent_management_dashboard"/>
+</odoo>

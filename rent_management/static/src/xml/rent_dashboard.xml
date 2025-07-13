@@ -65,7 +65,7 @@
                             </div>
                             <div class="o_card_info">
                                 <h4 class="o_card_value"><t t-out="state.kpis.new_bookings"/></h4>
-                                <div class="o_card_title">Booking Baru</div>
+                                <div class="o_card_title">Total</div>
                             </div>
                         </div>
                     </div>

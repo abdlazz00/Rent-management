@@ -62,12 +62,6 @@ class BookingTransaction(models.Model):
                         line.vehicle_id.state = 'book'
         return result
 
-    # @api.depends('company_id')
-    # def _compute_get_company_id(self):
-    #     current_company_id = self.env.company.id
-    #     for record in self:
-    #         record.company_id = current_company_id
-
     @api.depends('from_date', 'to_date', 'line_ids.price')
     def _compute_total_amount(self):
         for record in self:

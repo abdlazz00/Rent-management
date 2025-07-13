@@ -56,7 +56,7 @@
                                         <field name="brand" readonly="1"/>
                                         <field name="rent_from" readonly="1"/>
                                         <field name="rent_to" readonly="1"/>
-                                        <field name="currency_id" readonly="1" opsional="hide"/>
+                                        <field name="currency_id" readonly="1" optional="hide"/>
                                         <field name="price" widget="monetary" readonly="1"/>
                                     </list>
                                 </field>

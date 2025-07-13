@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Vehicle">
                     <header>
+                        <button name="action_book_now" type="object" string="Book Now" invisible="state != 'available'" class="oe_highliht"/>
                         <field name="state" widget="statusbar" statusbar_visible="available,rent"/>
                     </header>
                     <sheet>

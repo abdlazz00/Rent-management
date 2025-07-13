@@ -55,3 +55,25 @@ class Vehicle(models.Model):
     def button_available(self):
         for record in self:
             record.state = "available"
+
+    def action_book_now(self):
+        self.ensure_one()
+        self.state = "book"
+
+        bookings = self.env['booking.transaction'].create({
+            'state': 'draft',
+            'line_ids': [(0, 0, {
+                'vehicle_id': self.id,
+                'price': self.price_per_day,
+            })]
+        })
+
+        return {
+            'name': 'New Booking Transaction',
+            'type': 'ir.actions.act_window',
+            'res_model': 'booking.transaction',
+            'res_id': bookings.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {'default_vehicle_id': self.id}
+        }

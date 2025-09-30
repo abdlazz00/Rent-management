@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Your custom views here -->
+    <menuitem id="menu_library_root"
+              name="Library"
+              web_icon="library_management,static/description/logo-icon.png"
+              sequence="10"/>
+
+    <menuitem id="menu_library_collection"
+              name="Book Collections"
+              parent="menu_library_root"
+              sequence="10"/>
+
+    <menuitem id="menu_library_book"
+              name="Books"
+              parent="menu_library_collection"
+              action="library_book_action"
+              sequence="10"/>
+
+    <menuitem id="menu_library_author"
+              name="Authors"
+              parent="menu_library_collection"
+              action="library_author_action"
+              sequence="20"/>
+
+    <menuitem id="menu_library_publisher"
+              name="Publisher"
+              parent="menu_library_collection"
+              action="library_publisher_action"
+              sequence="30"/>
+
+    <menuitem id="menu_library_category"
+              name="Book Category"
+              parent="menu_library_collection"
+              action="library_category_action"
+              sequence="40"/>
+
+    <menuitem id="menu_library_genre"
+              name="Book Genres"
+              parent="menu_library_collection"
+              action="library_genre_action"
+              sequence="50"/>
+
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Your custom views here -->
+    <record id="library_book_view_form" model="ir.ui.view">
+        <field name="name">library.book.view.form</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <form string="Books">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="isbn"/>
+                            <field name="author_ids" widget="many2many_tags"/>
+                            <field name="publisher_id"/>
+                            <field name="category_id"/>
+                            <field name="genre_ids" widget="many2many_tags"/>
+                            <field name="stock"/>
+                            <field name="is_available" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="image_1920" widget="image" class="oe_avatar" nolabel="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="library_book_view_kanban" model="ir.ui.view">
+        <field name="name">library.book.view.kanban</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="image_1920"/>
+                <field name="author_ids"/>
+                <field name="stock"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click_edit oe_kanban_card d-flex">
+                            <!-- Gambar kiri -->
+                            <div class="p-2 border-end">
+                                <img t-att-src="kanban_image('library.book', 'image_1920', record.id.raw_value)"
+                                     class="img-thumbnail"
+                                     style="max-width:100px; max-height:100px; object-fit:contain;"/>
+                            </div>
+                            <!-- Detail kanan -->
+                            <div class="p-2 flex-grow-1">
+                                <h4 class="o_kanban_record_title mb-2">
+                                    <field name="name"/>
+                                </h4>
+                                <ul class="list-unstyled mb-0">
+                                    <li><strong>Author:</strong> <field name="author_ids" widget="many2many_tags"/></li>
+                                    <li><strong>Stock:</strong> <field name="stock"/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="library_book_view_list" model="ir.ui.view">
+        <field name="name">library.book.view.list</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <list string="Books">
+                <field name="name"/>
+                <field name="isbn"/>
+                <field name="author_ids" widget="many2many_tags"/>
+                <field name="publisher_id"/>
+                <field name="stock"/>
+                <field name="is_available" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record  id="library_book_action" model="ir.actions.act_window">
+        <field name="name">Books</field>
+        <field name="res_model">library.book</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+</odoo>
